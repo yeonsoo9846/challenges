@@ -142,3 +142,36 @@ function kthLargestPrimeGap(n, k) {
     if(k > gaps.length) return null;
     return gaps[k - 1];
 }
+
+//start부터 end까지의 범위에서 연속된 소수들의 합이 target이 되는
+// 가장 짧은 구간을 찾으세요.
+
+function shortestPrimeSum(start, end, target) {
+    let arrPrime = [];
+    for(let i = start; i <= end; i++) {
+        if(isPrime(i)) {
+            arrPrime.push(i);
+        }
+    }
+    if(arrPrime.length === 0) return null;
+
+    let shortest = null;
+    for(let i =0; i < arrPrime.length; i++) {
+        let sum = 0;
+        for(let j = i; j < arrPrime.length; j++) {
+            sum += arrPrime[j];
+            if(sum === target) {
+                let length = j - i + 1;
+                if(!shortest || length < shortest.length) {
+                    shortest = {
+                        length,
+                        primes: arrPrime.slice(i,j+1)
+                    }
+                }
+                break;
+            }
+            if(sum > target) break;
+        }
+    }
+    return shortest;
+}
