@@ -79,6 +79,66 @@ function getPrimesUpTo(n) {
         }
     }
     return solution;
-
 }
 
+// n!을 소수 p로 나눈 나머지를 구하세요. (p는 소수)
+function primeFactorialMod(n, p) {
+    let prime= 1;
+    for(let i = 2; i <= n; i++) {
+        prime *= i;
+    }
+    return prime % p;
+}
+
+
+// N 이하의 모든 쌍둥이 소수 쌍을 찾으세요.
+// 쌍둥이 소수란 차이가 2인 소수 쌍입니다. (예: 3과 5, 11과 13)
+function findTwinPrimes(n) {
+    let primes = [];
+    for(let i = 2; i <=n; i++) {
+        if(isPrime(i) && isPrime(i + 2)) {
+            primes.push([i, i + 2]);
+        }
+    }
+    return primes;
+}
+
+// 주어진 숫자를 소인수분해하여 {소수: 지수} 형태의 객체로 반환하세요.
+function primeFactorization(n) {
+    let result = {};
+
+    if(n > 1) result[n] = 1;
+
+    for(let i = 2; i * i <= n; i++) {
+        while(n % i === 0) {
+            if(!result[i]) result[i] = 0;
+            result[i]++;
+            n /= i;
+        }
+    }
+
+    return result;
+}
+
+// 연속된 소수들 사이의 간격 중 K번째로 큰 간격과 그 간격을 만드는 소수 쌍을 찾으세요.
+function kthLargestPrimeGap(n, k) {
+    let primes = [];
+    for(let i =2; i <= n; i++) {
+        if(isPrime(i)) {
+            primes.push(i);
+        }
+    }
+    if(primes.length < 2) return null;
+    let gaps = [];
+
+    for(let i = 0; i < primes.length - 1; i++) {
+        gaps.push({
+            gap: primes[i + 1] - primes[i],
+            pari: [primes[i], primes[i + 1]]
+        })
+    }
+
+    gaps.sort((a,b) => b.gap - a.gap);
+    if(k > gaps.length) return null;
+    return gaps[k - 1];
+}
