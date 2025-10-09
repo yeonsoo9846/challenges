@@ -58,4 +58,4 @@ function solution(A, B) {
     }
 
     return count === arrA.length ? -1 : count
-}
+}  
