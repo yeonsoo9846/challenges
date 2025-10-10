@@ -34,7 +34,6 @@ function solution(k, m, apple) {
     return point
 }
 
-solution(4,3,[4, 1, 2, 2, 4, 4, 4, 4, 1, 2, 4, 2])
 
 
 //두 정수 X, Y의 임의의 자리에서 공통으로 나타나는 정수 k(0 ≤ k ≤ 9)들을 이용하여 만들 수 있는 가장 큰 정수를 두 수의 짝꿍이라 합니다.
@@ -110,7 +109,6 @@ function solution2(babbling) {
     return count;
 }
 
-solution2(["ayaye", "uuu", "yeye", "yemawoo", "ayaayaa"])
 
 
 //숫자로 이루어진 문자열 t와 p가 주어질 때, t에서 p와 길이가 같은 부분문자열 중에서, 이 부분문자열이 나타내는 수가 p가 나타내는 수보다 작거나 같은 것의 개수를 return 하세요.
@@ -144,7 +142,6 @@ function solution3(t, p) {
     return count;
 }
 
-solution3('500220839878','7');
 
 
 //길이가 같은 두 개의 큐가 주어집니다. 하나의 큐를 골라 원소를 추출(pop)하고, 추출된 원소를 다른 큐에 집어넣는(insert) 작업을 통해 각 큐의 원소 합이 같도록 만들려고 합니다.
@@ -178,4 +175,99 @@ function solution4(queue1, queue2) {
     return count;
 }
 
-solution4([3, 2, 7, 2],[4, 6, 5, 1]);
+
+
+// 1 x 1 크기의 칸들로 이루어진 직사각형 격자 형태의 미로에서 탈출하려고 합니다.
+// 각 칸은:
+//
+// S: 시작 지점
+// E: 출구
+// L: 레버
+// O: 통로
+// X: 벽
+//
+// 규칙:
+//
+// 미로를 탈출하려면 레버를 먼저 당긴 후 출구로 가야 합니다
+// 레버를 당기지 않으면 출구가 열리지 않습니다
+// 상, 하, 좌, 우로 한 칸씩 이동 가능
+// 탈출까지 걸리는 **최소 시간(칸의 개수)**을 return 하세요
+// 탈출할 수 없다면 -1을 return 하세요
+
+function solution5(maps) {
+    let start, lever, end;
+    for(let i =0; i < maps.length; i++) {
+        for(let j = 0; j < maps[i].length; j++) {
+            if(maps[i][j] === 'S') {
+                start = [i,j];
+            }
+            if(maps[i][j] === 'L') {
+                lever = [i,j];
+            }
+            if(maps[i][j] === 'E') {
+                end = [i,j];
+            }
+        }
+    }
+
+    const toLever = bfs(maps, start, lever)
+    const toEnd = bfs(maps, lever, end)
+    if(toLever === undefined || toEnd === undefined) return -1;
+    return toLever + toEnd;
+}
+
+function bfs(maps, start, target) {
+    const rows = maps.length;
+    const cols = maps[0].length;
+
+    const visited = Array.from({length: rows}).map(() => (Array.from({length: cols}).fill(false)) )
+
+    const queue = [[start[0],start[1],0]];
+    visited[start[0]][start[1]] = true;
+
+    const directions = [[-1,0], [0,1], [1,0], [0,-1]];
+
+    while(queue.length > 0) {
+        const [x, y, distance] = queue.shift();
+        if(x === target[0] && y === target[1]) {
+            return distance;
+        }
+        for(let [dx, dy] of directions) {
+            const nx = x + dx;
+            const ny = y + dy;
+            if(nx < 0 || nx >= rows || ny < 0 || ny >= cols || visited[nx][ny] || maps[nx][ny] === 'X') {
+                continue;
+            }
+            visited[nx][ny] = true;
+            queue.push([nx, ny, distance + 1]);
+        }
+    }
+}
+
+function solution6(maps) {
+    let start = [0,0];
+    let end = [maps.length - 1, maps[0].length - 1];
+
+    const visited = Array.from({length: maps.length}).map(() => Array.from({length: maps[0].length}).fill(false));
+
+    const queue = [[0,0,1]];
+    visited[0][0] = true;
+
+    const directions = [[-1,0], [0,1], [1,0], [0,-1]];
+    while(queue.length > 0) {
+        const [x,y,distance] = queue.shift();
+        if(x === end[0] && y === end[1]) {
+            return distance;
+        }
+        for(let [dx,dy] of directions) {
+            const newX = x + dx;
+            const newY = y + dy;
+            if(newX < 0 || newX >= maps.length || newY < 0 || newY >= maps[0].length || visited[newX][newY] || maps[newX][newY] === 0) {
+                continue;
+            }
+            visited[newX][newY] = true;
+            queue.push([newX, newY, distance + 1]);
+        }
+    }
+}
+solution6([[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,1],[0,0,0,0,1]]);
